@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.sist.exam6">
+	<!-- ONGL :choose
+		1번이 입력되면 10번 부서의 사원정보, 2번이 입력되면 20번 부서의 사원정보, 그렇지 않으면 30번 부서의 사원정보를 검색
+		-->
+	<select id="dynamicChoose" resultType="ed" parameterType="int">
+	select	empno, ename, job, sal, hiredate
+	from	emp
+	where	
+	<choose>
+	</choose>
+	</select>
+	<!-- 1. procedure 에서 사용할 map 선언 -->
+	<resultMap type="hashmap" id="map"/>
+	<!-- 2. procedure호출 -->
+	<select id="selectDeptEmp" statementType="CALLABLE">
+	{
+		call select_dept_emp(
+			#{deptno,mode=IN,jdbcType=NUMERIC},
+		 	#{selectEmp,mode=OUT,jdbcType=CURSOR,javaType=java.sql.ResultSet,resultMap=map }, 
+		 	#{msg,mode=OUT,jdbcType=VARCHAR,resultMap=map}
+		 	)
+	}
+	</select>
+</mapper>
